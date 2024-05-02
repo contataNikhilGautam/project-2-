@@ -21,7 +21,7 @@ export class BookCardComponent {
   books:any
   dropdownStates: boolean[] = [];
   bookidmap: { [key: number]: string } = {}// for future search option
-  
+  totalItems: number = 0;
   numberofbooks:string ='';
   p:number = 1
   bookid:string=''
@@ -32,7 +32,7 @@ export class BookCardComponent {
   bookPrice: number = 0;
   upadteform :FormGroup;
   submitted = false;
-  
+  currentPage: number = 1;
 
   constructor(private booksService: BooksService,public dialog: MatDialog,private toastr: ToastrService,private fb: FormBuilder){
     this.upadteform = fb.group({
@@ -45,16 +45,19 @@ export class BookCardComponent {
   }
 
   ngOnInit(){
-    this.loadBooks()
+    this.loadBooks(this.currentPage)
   }
   get f(): { [key: string]: AbstractControl } {
     return this.upadteform.controls;
   }
 
-  loadBooks(){
-    this.booksService.getAllBooks().subscribe((res)=>{
+  loadBooks(pgnumber :number,pageSize = 12){
+    this.booksService.getAllBooks(pgnumber, pageSize).subscribe((res) => {
       console.log(res);
-      this.books = res.data
+      this.books = res.data;
+      this.totalItems = res.total;
+      // this.books.sort((a: any, b: any) => {
+      //   return b._id.localeCompare(a._id); })
       this.numberofbooks = this.books.length.toString()
       console.log(this.books);
       this.books.forEach((book: any, index: number) => {
@@ -66,16 +69,15 @@ export class BookCardComponent {
     })
     
   }
+ 
+  
+
+
   saveid(id:string){
     this.bookid = id
     console.log(this.bookid)
     this.booksService.getBookById(this.bookid).subscribe((res) => {
       const book = res.data;
-      // this.bookName = book.name;
-      // this.bookAuthor = book.author;
-      // this.bookImage = book.image;
-      // this.bookPages = book.pages;
-      // this.bookPrice = book.price;
 
       this.upadteform.setValue({
         name: book.name,
@@ -88,10 +90,7 @@ export class BookCardComponent {
   }
 
   
-  // loadBooksAndEmitEvent() {
-  //   this.loadBooks();
-  //   this.loadBooksEvent.emit();
-  // }
+ 
   
   
   update(){
@@ -113,7 +112,8 @@ export class BookCardComponent {
     this.booksService.updateBook(book,this.bookid).subscribe((res)=>{
       console.log(res)
       this.toastr.success('Successfully updated book','Success')
-      this.loadBooks()
+      this.bookid = ''
+      this.loadBooks(this.currentPage)
     },(error)=>{
       this.toastr.error('Failed to update the book.', 'Error')
     })
@@ -127,7 +127,7 @@ export class BookCardComponent {
       
     })
     this.bookid = ''
-    this.loadBooks()
+    this.loadBooks(this.currentPage)
     
   }
   toggleDropdown(index: number): void {

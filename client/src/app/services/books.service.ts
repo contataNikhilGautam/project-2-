@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -14,8 +14,11 @@ export class BooksService {
 
   constructor(private http: HttpClient) { }
 
-  getAllBooks(): Observable<any> {
-    return this.http.get<any>(`${this.baseUrl}/books/`);
+  getAllBooks(pageNumber: number, pageSize: number): Observable<any> {
+     pageSize = 12;
+
+    const url = `${this.baseUrl}/books?page=${pageNumber}&limit=${pageSize}`;
+    return this.http.get<any>(url);
   }
 
   getBookById(id:string): Observable<any> {

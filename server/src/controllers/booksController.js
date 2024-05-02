@@ -1,19 +1,82 @@
 const Book = require('../models/books');
 
+// async function getAllBooks(req, res) {
+//     try {
+//         const userBooks = await Book.find({ uid: req.user._id });
+//         res.status(200).json({
+//             success: true,
+//             data: userBooks
+//         });
+//     } catch (err) {
+//         res.status(400).json({
+//             success: false,
+//             error: err.message
+//         });
+//     }
+// }
+// async function getAllBooks(req, res) {
+//     const pageSize = 20;
+//     const page = req.query.page || 1;
+
+//     try {
+        
+//         const skip = (page - 1) * pageSize;
+
+//         const userBooks = await Book.find({ uid: req.user._id })
+//             .skip(skip)
+//             .limit(pageSize)
+//             .sort({_id:-1})
+
+//         res.status(200).json({
+//             success: true,
+//             data: userBooks
+//         });
+//     } catch (err) {
+//         res.status(400).json({
+//             success: false,
+//             error: err.message
+//         });
+//     }
+// }
+
+
 async function getAllBooks(req, res) {
+    const pageSize = 20;
+    const pageString = req.query.page || '1'; // Get page as string
+  
+    // Try converting page to a number
+    let page;
     try {
-        const userBooks = await Book.find({ uid: req.user._id });
-        res.status(200).json({
-            success: true,
-            data: userBooks
-        });
-    } catch (err) {
-        res.status(400).json({
-            success: false,
-            error: err.message
-        });
+      page = parseInt(pageString);
+    } catch (error) {
+      // Handle invalid page number
+      return res.status(400).json({
+        success: false,
+        error: 'Invalid page number provided'
+      });
     }
-}
+  
+    const skip = (page - 1) * pageSize;
+  
+    try {
+      const userBooks = await Book.find({ uid: req.user._id })
+        .skip(skip)
+        .limit(pageSize)
+        .sort({ _id: -1 });
+  
+      res.status(200).json({
+        success: true,
+        data: userBooks
+      });
+    } catch (err) {
+      res.status(400).json({
+        success: false,
+        error: err.message
+      });
+    }
+  }
+   
+
 
 async function getBookById(req, res) {
     try {

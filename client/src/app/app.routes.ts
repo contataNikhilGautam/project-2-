@@ -6,6 +6,7 @@ import { authGuard } from './services/auth.guard';
 import { SignupComponent } from './components/signup/signup.component';
 import { BookCardComponent } from './components/book-card/book-card.component';
 import { PagenotfoundComponent } from './components/pagenotfound/pagenotfound.component';
+import { BooksPageComponent } from './components/books-page/books-page.component';
 
 export const routes: Routes = [
     {
@@ -25,6 +26,9 @@ export const routes: Routes = [
     {
         path:'dashboard', component:DashboardComponent ,
         canActivate:[authGuard]
+    },
+    {
+        path:'bookspage',component:BooksPageComponent, canActivate:[authGuard]
     },
     {
         path:'**',component:PagenotfoundComponent

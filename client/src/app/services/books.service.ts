@@ -15,8 +15,6 @@ export class BooksService {
   constructor(private http: HttpClient) { }
 
   getAllBooks(pageNumber: number, pageSize: number): Observable<any> {
-     pageSize = 12;
-
     const url = `${this.baseUrl}/books?page=${pageNumber}&limit=${pageSize}`;
     return this.http.get<any>(url);
   }
@@ -36,5 +34,9 @@ export class BooksService {
   deleteBook(id:string): Observable<void> {
     console.log('delete');
     return this.http.delete<any>(`${this.baseUrl}/books/${id}`);
+  }
+
+  getNumberOfBooks():Observable<any>{
+    return this.http.get<any>(`${this.baseUrl}/books/nob`);
   }
 }

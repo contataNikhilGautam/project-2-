@@ -33,6 +33,9 @@ export class BookCardComponent {
   upadteform :FormGroup;
   submitted = false;
   currentPage: number = 1;
+  pgnumber:number = 1
+  pageSize = 12
+  totalbooks:string =''
 
   constructor(private booksService: BooksService,public dialog: MatDialog,private toastr: ToastrService,private fb: FormBuilder){
     this.upadteform = fb.group({
@@ -45,28 +48,51 @@ export class BookCardComponent {
   }
 
   ngOnInit(){
-    this.loadBooks(this.currentPage)
+    this.loadBooks(this.pgnumber)
+    this.totalbooks = localStorage.getItem('noOfBooks')!
   }
   get f(): { [key: string]: AbstractControl } {
     return this.upadteform.controls;
   }
 
-  loadBooks(pgnumber :number,pageSize = 12){
-    this.booksService.getAllBooks(pgnumber, pageSize).subscribe((res) => {
+  onNext(){
+    if(this.pgnumber == Math.ceil(parseInt(this.totalbooks)/this.pageSize)){
+      const nextbtn = document.getElementById('nextbtn')
+      nextbtn?.setAttribute('disabled','')
+      this.toastr.warning("You do not have any more books",'Warning')
+    }
+    else{
+    this.pgnumber ++
+    this.loadBooks(this.pgnumber)}
+  }
+  onPrevious(){
+    if(this.pgnumber == 1){
+      const prevbtn = document.getElementById('prevbtn')
+      prevbtn?.setAttribute('disabled','')
+      this.toastr.warning("You can't go back",'Warning')
+    }
+    else{
+    this.pgnumber --
+    this.loadBooks(this.pgnumber)}
+  }
+
+  loadBooks(pgnumber:number){
+    this.booksService.getAllBooks(pgnumber, this.pageSize).subscribe((res) => {
       console.log(res);
       this.books = res.data;
       this.totalItems = res.total;
-      // this.books.sort((a: any, b: any) => {
-      //   return b._id.localeCompare(a._id); })
-      this.numberofbooks = this.books.length.toString()
       console.log(this.books);
       this.books.forEach((book: any, index: number) => {
         this.bookidmap[index] = book._id;
          
       });
       console.log(this.bookidmap);
-      localStorage.setItem('numberofbooks',this.numberofbooks)
-    })
+      
+    },(error) => {
+        if (error.status === 400) {
+          this.toastr.warning('You do not have any more books',"No more books are present")
+        }}
+  )
     
   }
  

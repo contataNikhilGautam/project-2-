@@ -5,6 +5,7 @@ import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModu
 import { BooksService } from '../../services/books.service';
 import { NgxLoadingModule } from 'ngx-loading';
 import { CommonModule } from '@angular/common';
+import { ToastrService } from 'ngx-toastr';
 
 
 
@@ -19,9 +20,10 @@ export class BooksPageComponent {
   createform:FormGroup
   submitted=false
   public loading = false;
-  toastr: any;
   
-   constructor(private fb:FormBuilder,private bookservice:BooksService){
+   constructor(private fb:FormBuilder,private bookservice:BooksService,private toastr: ToastrService) 
+    
+   {
     this.createform = fb.group({
       name:['', [Validators.required]],
       author:['', [Validators.required]],
@@ -34,8 +36,6 @@ export class BooksPageComponent {
     
 
     ngOnInit(){
-      
-
     }
     get f(): { [key: string]: AbstractControl } {
       return this.createform.controls;
@@ -67,11 +67,9 @@ export class BooksPageComponent {
         setTimeout(()=>{
           this.loading = false
           window.location.reload()
-        },1650)
+        },1900)
         
         this.toastr.success('Book created','Success')
-        
-        
       },(error)=>{
         this.loading = false;
         this.toastr.error('Failed to create the book.', 'Error');

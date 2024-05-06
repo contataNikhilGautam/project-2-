@@ -150,6 +150,10 @@ export class BookCardComponent {
     console.log(this.bookid);
     this.booksService.deleteBook(this.bookid).subscribe((res)=>{
       console.log(res);
+      this.toastr.success('Successfully deleted','Success')
+    },(error)=>{
+      this.toastr.error('Not able to delete','Error while deleting')
+      console.log(error);
       
     })
     this.bookid = ''

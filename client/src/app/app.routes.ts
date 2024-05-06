@@ -8,6 +8,8 @@ import { BookCardComponent } from './components/book-card/book-card.component';
 import { PagenotfoundComponent } from './components/pagenotfound/pagenotfound.component';
 import { BooksPageComponent } from './components/books-page/books-page.component';
 
+
+
 export const routes: Routes = [
     {
         path:'',redirectTo:'login' , pathMatch:'full'
@@ -28,7 +30,10 @@ export const routes: Routes = [
         canActivate:[authGuard]
     },
     {
-        path:'bookspage',component:BooksPageComponent, canActivate:[authGuard]
+        path:'bookspage',component:BooksPageComponent, canActivate:[authGuard],
+        children:[
+            {path:'bookcards',component:BookCardComponent},
+        ]
     },
     {
         path:'**',component:PagenotfoundComponent

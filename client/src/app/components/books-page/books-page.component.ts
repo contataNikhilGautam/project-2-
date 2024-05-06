@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { BookCardComponent } from '../book-card/book-card.component';
 import { NavbarComponent } from '../navbar/navbar.component';
 import { AbstractControl, FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
@@ -20,7 +20,7 @@ export class BooksPageComponent {
   createform:FormGroup
   submitted=false
   public loading = false;
-  
+  @ViewChild (BookCardComponent) private bookcard!: BookCardComponent 
    constructor(private fb:FormBuilder,private bookservice:BooksService,private toastr: ToastrService) 
     
    {
@@ -66,7 +66,7 @@ export class BooksPageComponent {
         this.loading = true;
         setTimeout(()=>{
           this.loading = false
-          window.location.reload()
+          this.bookcard.loadBooks(1)
         },1900)
         
         this.toastr.success('Book created','Success')

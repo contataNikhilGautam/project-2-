@@ -139,7 +139,7 @@ export class BookCardComponent {
       console.log(res)
       this.toastr.success('Successfully updated book','Success')
       this.bookid = ''
-      this.loadBooks(this.currentPage)
+      this.loadBooks(this.pgnumber)
     },(error)=>{
       this.toastr.error('Failed to update the book.', 'Error')
     })
@@ -157,7 +157,7 @@ export class BookCardComponent {
       
     })
     this.bookid = ''
-    this.loadBooks(this.currentPage)
+    this.loadBooks(this.pgnumber)
     
   }
   toggleDropdown(index: number): void {
